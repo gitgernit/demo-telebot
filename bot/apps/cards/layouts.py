@@ -1,15 +1,15 @@
 import telebot.types
 
-from bot.apps.cards.enums import Headers
 from bot.apps.cards.enums import Sorting
+from bot.apps.cards.factories import CallbackFactory
 
 
 def get_personal_cards(
     *,
-    card_id: int,
-    page: int,
     amount: int,
+    card_id: int,
     sorting: str | Sorting,
+    page: int,
     favorite: bool,
 ) -> telebot.types.InlineKeyboardMarkup:
     """
@@ -21,32 +21,48 @@ def get_personal_cards(
     :param sorting: One of `bot.apps.cards.enums.Sorting`
     :param favorite: Whether the card is favorite or not
     :return: Corresponding inline keyboard with callback data being a header
-             (one of `bot.apps.cards.enums.Headers`) and key-values
-             separated by spaces
+             (one of `bot.apps.cards.enums.Headers`) and corresponding
+             fields from `bot.apps.cards.factories.callback_factory.fields`
     """
+    callback_factory = CallbackFactory(
+        dict(
+            amount=amount,
+            card_id=card_id,
+            sorting=sorting,
+            page=page,
+            favorite=favorite,
+        ),
+    )
 
     buttons = [
         (
             telebot.types.InlineKeyboardButton(
                 text=f'{page}/{amount}',
-                callback_data=f'{Headers.CURRENT_PAGE} page:{page}',
+                callback_data=callback_factory.craft.new(
+                    **callback_factory.fields,
+                ),
             ),
             telebot.types.InlineKeyboardButton(
                 text='>>',
-                callback_data=f'{Headers.SWITCH_FORTH}'
-                f' page:{page} sorting:{sorting}',
+                callback_data=callback_factory.switch_forth.new(
+                    **callback_factory.fields,
+                ),
             ),
         ),
         (
             telebot.types.InlineKeyboardButton(
                 text='Сортировать',
-                callback_data=f'{Headers.CHANGE_FILTER}',
+                callback_data=callback_factory.change_filter.new(
+                    **callback_factory.fields,
+                ),
             ),
         ),
         (
             telebot.types.InlineKeyboardButton(
                 text='Крафт',
-                callback_data=f'{Headers.CRAFT}',
+                callback_data=callback_factory.craft.new(
+                    **callback_factory.fields,
+                ),
             ),
         ),
         (
@@ -54,8 +70,9 @@ def get_personal_cards(
                 text='Добавить в избранное'
                 if not favorite
                 else 'Удалить из избранного',
-                callback_data=f'{Headers.ADD_TO_FAVORITES if not favorite
-                else Headers.DELETE_FROM_FAVORITES} card_id:{card_id}',
+                callback_data=callback_factory.add_to_favorites.new(
+                    **callback_factory.fields,
+                ),
             ),
         ),
     ]
@@ -64,8 +81,9 @@ def get_personal_cards(
         buttons[0] = (
             telebot.types.InlineKeyboardButton(
                 text='<<',
-                callback_data=f'{Headers.SWITCH_BACK}'
-                f' page:{page} sorting:{sorting}',
+                callback_data=callback_factory.switch_back.new(
+                    **callback_factory.fields,
+                ),
             ),
         ) + buttons[0]
 

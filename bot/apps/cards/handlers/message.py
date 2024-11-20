@@ -14,13 +14,14 @@ async def send_user_cards(message: telebot.types.Message) -> None:
         ENGINE,
     ) as session:
         user: bot.models.user.User | None = await session.get(
-            bot.models.user.User, message.from_user.id,
+            bot.models.user.User,
+            message.from_user.id,
         )
 
         markup = get_personal_cards(
+            amount=len(user.cards),
             card_id=user.cards[0].id if user.cards else -1,
             page=1 if user.cards else 0,
-            amount=len(user.cards),
             sorting='none',
             favorite=False,
         )
@@ -54,7 +55,8 @@ async def delete_card(message: telebot.types.Message) -> None:
         ENGINE,
     ) as session:
         user: bot.models.user.User | None = await session.get(
-            bot.models.user.User, message.from_user.id,
+            bot.models.user.User,
+            message.from_user.id,
         )
 
         if user.cards:

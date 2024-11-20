@@ -9,5 +9,6 @@ class User(sqlmodel.SQLModel, table=True):
     )
 
     cards: list['Card'] = sqlmodel.Relationship(
-        back_populates='user', sa_relationship_kwargs={'lazy': 'joined'},
+        back_populates='user',
+        sa_relationship_kwargs={'lazy': 'joined'},
     )

@@ -6,7 +6,9 @@ class Card(sqlmodel.SQLModel, table=True):
     id: int | None = sqlmodel.Field(
         default=None,
         sa_column=sqlalchemy.Column(
-            sqlalchemy.BigInteger(), primary_key=True, autoincrement=True,
+            sqlalchemy.BigInteger(),
+            primary_key=True,
+            autoincrement=True,
         ),
     )
 
