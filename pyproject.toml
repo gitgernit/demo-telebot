@@ -1,0 +1,16 @@
+[project]
+name = "demo-telebot"
+version = "0.1.0"
+description = "Demo bot using pytelegrambotapi"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pytelegrambotapi>=4.24.0",
+    "sqlmodel>=0.0.22",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "isort>=5.13.2",
+    "ruff>=0.7.4",
+]
