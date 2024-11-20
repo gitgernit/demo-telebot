@@ -14,5 +14,6 @@ class ExceptionHandler(telebot.ExceptionHandler):
 
 
 bot_router = telebot.async_telebot.AsyncTeleBot(
-    config.TOKEN_TELEGRAM_API, exception_handler=ExceptionHandler()
+    config.TOKEN_TELEGRAM_API,
+    exception_handler=ExceptionHandler(),
 )
