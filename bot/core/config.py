@@ -23,11 +23,4 @@ class Config(pydantic_settings.BaseSettings):
 
 config = Config()
 
-DB_URL = 'postgresql+psycopg://{user}:{password}@{host}:{port}/{db}'.format(
-    user=config.POSTGRES_USER,
-    password=config.POSTGRES_PASSWORD,
-    host=config.POSTGRES_HOST,
-    port=config.POSTGRES_PORT,
-    db=config.POSTGRES_DB,
-)
-
+DB_URL = f'postgresql+psycopg://{config.POSTGRES_USER}:{config.POSTGRES_PASSWORD}@{config.POSTGRES_HOST}:{config.POSTGRES_PORT}/{config.POSTGRES_DB}'
