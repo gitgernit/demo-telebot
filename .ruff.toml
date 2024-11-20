@@ -1,4 +1,4 @@
-extend-exclude = [".github", "alembic"]
+extend-exclude = [".github", "alembic", "__init__.py"]
 force-exclude = true
 line-length = 79
 show-fixes = true
@@ -22,6 +22,9 @@ extend-select = [
     "PL", "TRY", "PERF", "RUF"
 ]
 ignore = ["ANN101", "PERF101", "ISC001"]
+
+[lint.extend-per-file-ignores]
+"**/models/**.py" = ["F821"]
 
 [lint.flake8-quotes]
 inline-quotes = 'single'

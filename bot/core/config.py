@@ -2,6 +2,7 @@ import pathlib
 
 import pydantic
 import pydantic_settings
+import sqlalchemy.ext.asyncio
 
 
 class Config(pydantic_settings.BaseSettings):
@@ -24,3 +25,4 @@ class Config(pydantic_settings.BaseSettings):
 config = Config()
 
 DB_URL = f'postgresql+psycopg://{config.POSTGRES_USER}:{config.POSTGRES_PASSWORD}@{config.POSTGRES_HOST}:{config.POSTGRES_PORT}/{config.POSTGRES_DB}'
+ENGINE = sqlalchemy.ext.asyncio.create_async_engine(DB_URL)

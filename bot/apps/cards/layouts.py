@@ -5,6 +5,7 @@ from bot.apps.cards.enums import Sorting
 
 
 def get_personal_cards(
+    *,
     card_id: int,
     page: int,
     amount: int,
@@ -20,7 +21,8 @@ def get_personal_cards(
     :param sorting: One of `bot.apps.cards.enums.Sorting`
     :param favorite: Whether the card is favorite or not
     :return: Corresponding inline keyboard with callback data being a header
-             (one of `bot.apps.cards.enums.Headers`) and key-values separated by spaces
+             (one of `bot.apps.cards.enums.Headers`) and key-values
+             separated by spaces
     """
 
     buttons = [
@@ -31,7 +33,8 @@ def get_personal_cards(
             ),
             telebot.types.InlineKeyboardButton(
                 text='>>',
-                callback_data=f'{Headers.SWITCH_FORTH} page:{page} sorting:{sorting}',
+                callback_data=f'{Headers.SWITCH_FORTH}'
+                f' page:{page} sorting:{sorting}',
             ),
         ),
         (
@@ -52,7 +55,7 @@ def get_personal_cards(
                 if not favorite
                 else 'Удалить из избранного',
                 callback_data=f'{Headers.ADD_TO_FAVORITES if not favorite
-                                 else Headers.DELETE_FROM_FAVORITES} card_id:{card_id}',
+                else Headers.DELETE_FROM_FAVORITES} card_id:{card_id}',
             ),
         ),
     ]
@@ -61,10 +64,9 @@ def get_personal_cards(
         buttons[0] = (
             telebot.types.InlineKeyboardButton(
                 text='<<',
-                callback_data=f'{Headers.SWITCH_BACK} page:{page} sorting:{sorting}',
+                callback_data=f'{Headers.SWITCH_BACK}'
+                f' page:{page} sorting:{sorting}',
             ),
         ) + buttons[0]
 
-    keyboard = telebot.types.InlineKeyboardMarkup(buttons)
-
-    return keyboard
+    return telebot.types.InlineKeyboardMarkup(buttons)
