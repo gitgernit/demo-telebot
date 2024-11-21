@@ -2,6 +2,7 @@ import enum
 
 
 class Sorting(enum.StrEnum):
+    NONE = 'none'
     FAVORITES = 'favorites'
 
 

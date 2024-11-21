@@ -1,15 +1,12 @@
 __all__: list[str] = ['bot_router']
 
-import logging
-import traceback
-
 import telebot.async_telebot
 
 from bot.core.config import config
 
 
 class ExceptionHandler(telebot.ExceptionHandler):
-    def handle(self, exception):
+    def handle(self, exception: Exception) -> None:
         raise exception
 
 
