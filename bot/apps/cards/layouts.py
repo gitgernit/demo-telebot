@@ -25,12 +25,12 @@ def change_filter_markup() -> telebot.types.InlineKeyboardMarkup:
 
 
 def get_personal_cards_markup(
-        *,
-        amount: int,
-        card_id: int,
-        sorting: str | Sorting,
-        page: int,
-        favorite: bool,
+    *,
+    amount: int,
+    card_id: int,
+    sorting: str | Sorting,
+    page: int,
+    favorite: bool,
 ) -> telebot.types.InlineKeyboardMarkup:
     """
     Get an inline keyboard for personal cards
@@ -81,28 +81,32 @@ def get_personal_cards_markup(
 
     if card_id != -1:
         buttons += (
-            telebot.types.InlineKeyboardButton(
-                text='Добавить в избранное',
-                callback_data=card_list_callback_factory.add_to_favorites.new(
-                    **data,
-                ),
-            ) if not favorite else telebot.types.InlineKeyboardButton(
-                text='Удалить из избранного',
-                callback_data=card_list_callback_factory.delete_from_favorites.new(
-                    **data,
+            (
+                telebot.types.InlineKeyboardButton(
+                    text='Добавить в избранное',
+                    callback_data=card_list_callback_factory.add_to_favorites.new(
+                        **data,
+                    ),
+                )
+                if not favorite
+                else telebot.types.InlineKeyboardButton(
+                    text='Удалить из избранного',
+                    callback_data=card_list_callback_factory.delete_from_favorites.new(
+                        **data,
+                    ),
                 ),
             ),
-        ),
+        )
 
     if page > 1:
         buttons[0] = (
-                         telebot.types.InlineKeyboardButton(
-                             text='<<',
-                             callback_data=card_list_callback_factory.switch_back.new(
-                                 **data,
-                             ),
-                         ),
-                     ) + buttons[0]
+            telebot.types.InlineKeyboardButton(
+                text='<<',
+                callback_data=card_list_callback_factory.switch_back.new(
+                    **data,
+                ),
+            ),
+        ) + buttons[0]
 
     if page < amount:
         buttons[0] += (

@@ -1,7 +1,6 @@
 import sqlmodel.ext.asyncio.session
 import telebot.types
 
-import bot.models.card
 from bot.apps.cards import prompts
 import bot.apps.cards.common
 from bot.apps.cards.factories import card_list_callback_factory
@@ -9,27 +8,37 @@ from bot.apps.cards.factories import sorting_list_callback_factory
 import bot.apps.cards.layouts
 from bot.core import bot_router
 from bot.core.config import ENGINE
+import bot.models.card
 import bot.models.user
 
 
 @bot_router.callback_query_handler(
-    func=lambda query: card_list_callback_factory.add_to_favorites.filter().check(query) or card_list_callback_factory.delete_from_favorites.filter().check(query)
+    func=lambda query: (
+        card_list_callback_factory.add_to_favorites.filter().check(query)
+        or card_list_callback_factory.delete_from_favorites.filter().check(
+            query,
+        )
+    ),
 )
 async def add_to_favorites(call: telebot.types.CallbackQuery) -> None:
-    if call.data.startswith(card_list_callback_factory.add_to_favorites.prefix):
+    if call.data.startswith(
+        card_list_callback_factory.add_to_favorites.prefix,
+    ):
         data = card_list_callback_factory.add_to_favorites.parse(call.data)
 
     else:
-        data = card_list_callback_factory.delete_from_favorites.parse(call.data)
+        data = card_list_callback_factory.delete_from_favorites.parse(
+            call.data,
+        )
 
     favorite = card_list_callback_factory.add_to_favorites.filter().check(call)
 
     async with sqlmodel.ext.asyncio.session.AsyncSession(
-            ENGINE,
+        ENGINE,
     ) as session:
         card: bot.models.card.Card | None = await session.get(
             bot.models.card.Card,
-            int(data['card_id'])
+            int(data['card_id']),
         )
         card.favorite = favorite
 
@@ -44,7 +53,11 @@ async def add_to_favorites(call: telebot.types.CallbackQuery) -> None:
         favorite=favorite,
     )
 
-    await bot_router.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.id, reply_markup=markup)
+    await bot_router.edit_message_reply_markup(
+        chat_id=call.message.chat.id,
+        message_id=call.message.id,
+        reply_markup=markup,
+    )
 
 
 @bot_router.callback_query_handler(
