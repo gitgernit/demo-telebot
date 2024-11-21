@@ -50,9 +50,10 @@ class CardListCallbackFactory:
 class SortingListCallbackFactory:
     def __init__(self) -> None:
         self.none = telebot.callback_data.CallbackData(prefix=Sorting.NONE)
+        self.sorted = telebot.callback_data.CallbackData(prefix=Sorting.FAVORITES)
 
         self.all_factories: tuple[telebot.callback_data.CallbackData] = (
-            self.none,
+            self.none, self.sorted,
         )
 
 

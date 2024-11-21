@@ -21,23 +21,23 @@ async def send_personal_cards(
             bot.models.user.User,
             user_id,
         )
-        cards = await sort_cards(user.cards, 'none')
+        cards = await sort_cards(user.cards, sorting)
 
     page = 1 if cards else 0
-    card_id = cards[page - 1].id if page else -1
+    card = cards[page - 1] if page else None
 
     markup = bot.apps.cards.layouts.get_personal_cards_markup(
         amount=len(cards),
-        card_id=card_id,
+        card_id=card.id if card else -1,
         page=page,
         sorting=sorting,
-        favorite=False,
+        favorite=card.favorite if card else False,
     )
 
     await bot_router.send_message(
         chat_id,
-        text=prompts.CARD_DESCRIPTION.format(card_id=card_id)
-        if card_id != 1
+        text=prompts.CARD_DESCRIPTION.format(card_id=card.id if card else -1)
+        if card
         else prompts.NO_CARDS,
         reply_markup=markup,
         parse_mode='HTML',
@@ -50,7 +50,11 @@ async def sort_cards(
 ) -> list[bot.models.card.Card]:
     match sorting:
         case Sorting.NONE:
-            return cards
+            return sorted(cards, key=lambda card: card.id)
+
+        case Sorting.FAVORITES:
+            cards = [card for card in cards if card.favorite]
+            return sorted(cards, key=lambda card: card.id)
 
         case _:
             raise NotImplementedError
