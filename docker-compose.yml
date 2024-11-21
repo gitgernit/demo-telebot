@@ -20,5 +20,39 @@ services:
     ports:
       - ${POSTGRES_PORT}:5432
 
+  prestart:
+    build:
+      context: .
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    command: uv run alembic upgrade head
+    env_file:
+      - path: .env.template
+        required: true
+      - path: .env
+        required: false
+    environment:
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=db
+
+  bot:
+    restart: always
+    build:
+      context: .
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - path: .env.template
+        required: true
+      - path: .env
+        required: false
+    environment:
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=db
+
 volumes:
   app-db-data:
