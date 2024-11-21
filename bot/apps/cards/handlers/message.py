@@ -28,6 +28,7 @@ async def generate_card(message: telebot.types.Message) -> None:
     ) as session:
         card = bot.models.card.Card(
             user_id=message.from_user.id,
+            favorite=False,
         )
 
         session.add(card)

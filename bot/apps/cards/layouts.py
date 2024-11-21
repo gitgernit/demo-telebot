@@ -13,6 +13,12 @@ def change_filter_markup() -> telebot.types.InlineKeyboardMarkup:
                 callback_data=sorting_list_callback_factory.none.new(),
             ),
         ),
+        (
+            telebot.types.InlineKeyboardButton(
+                text='Избранные',
+                callback_data=sorting_list_callback_factory.sorted.new(),
+            ),
+        ),
     ]
 
     return telebot.types.InlineKeyboardMarkup(buttons)
@@ -71,17 +77,26 @@ def get_personal_cards_markup(
                 ),
             ),
         ),
-        (
-            telebot.types.InlineKeyboardButton(
-                text='Добавить в избранное'
+    ]
+
+    if card_id != -1:
+        buttons += (
+            (
+                telebot.types.InlineKeyboardButton(
+                    text='Добавить в избранное',
+                    callback_data=card_list_callback_factory.add_to_favorites.new(
+                        **data,
+                    ),
+                )
                 if not favorite
-                else 'Удалить из избранного',
-                callback_data=card_list_callback_factory.add_to_favorites.new(
-                    **data,
+                else telebot.types.InlineKeyboardButton(
+                    text='Удалить из избранного',
+                    callback_data=card_list_callback_factory.delete_from_favorites.new(
+                        **data,
+                    ),
                 ),
             ),
-        ),
-    ]
+        )
 
     if page > 1:
         buttons[0] = (
