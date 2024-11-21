@@ -1,9 +1,10 @@
 import telebot.callback_data
 
 from bot.apps.cards.enums import Headers
+from bot.apps.cards.enums import Sorting
 
 
-class CallbackFactory:
+class CardListCallbackFactory:
     def __init__(
         self,
         fields: tuple[str] = (
@@ -46,4 +47,14 @@ class CallbackFactory:
         )
 
 
-callback_factory = CallbackFactory()
+class SortingListCallbackFactory:
+    def __init__(self) -> None:
+        self.none = telebot.callback_data.CallbackData(prefix=Sorting.NONE)
+
+        self.all_factories: tuple[telebot.callback_data.CallbackData] = (
+            self.none,
+        )
+
+
+card_list_callback_factory = CardListCallbackFactory()
+sorting_list_callback_factory = SortingListCallbackFactory()

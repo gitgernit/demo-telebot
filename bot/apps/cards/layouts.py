@@ -1,10 +1,24 @@
 import telebot.types
 
 from bot.apps.cards.enums import Sorting
-from bot.apps.cards.factories import callback_factory
+from bot.apps.cards.factories import card_list_callback_factory
+from bot.apps.cards.factories import sorting_list_callback_factory
 
 
-def get_personal_cards(
+def change_filter_markup() -> telebot.types.InlineKeyboardMarkup:
+    buttons = [
+        (
+            telebot.types.InlineKeyboardButton(
+                text='Все карты',
+                callback_data=sorting_list_callback_factory.none.new(),
+            ),
+        ),
+    ]
+
+    return telebot.types.InlineKeyboardMarkup(buttons)
+
+
+def get_personal_cards_markup(
     *,
     amount: int,
     card_id: int,
@@ -36,7 +50,7 @@ def get_personal_cards(
         (
             telebot.types.InlineKeyboardButton(
                 text=f'{page}/{amount}',
-                callback_data=callback_factory.craft.new(
+                callback_data=card_list_callback_factory.craft.new(
                     **data,
                 ),
             ),
@@ -44,7 +58,7 @@ def get_personal_cards(
         (
             telebot.types.InlineKeyboardButton(
                 text='Сортировать',
-                callback_data=callback_factory.change_filter.new(
+                callback_data=card_list_callback_factory.change_filter.new(
                     **data,
                 ),
             ),
@@ -52,7 +66,7 @@ def get_personal_cards(
         (
             telebot.types.InlineKeyboardButton(
                 text='Крафт',
-                callback_data=callback_factory.craft.new(
+                callback_data=card_list_callback_factory.craft.new(
                     **data,
                 ),
             ),
@@ -62,7 +76,7 @@ def get_personal_cards(
                 text='Добавить в избранное'
                 if not favorite
                 else 'Удалить из избранного',
-                callback_data=callback_factory.add_to_favorites.new(
+                callback_data=card_list_callback_factory.add_to_favorites.new(
                     **data,
                 ),
             ),
@@ -73,7 +87,7 @@ def get_personal_cards(
         buttons[0] = (
             telebot.types.InlineKeyboardButton(
                 text='<<',
-                callback_data=callback_factory.switch_back.new(
+                callback_data=card_list_callback_factory.switch_back.new(
                     **data,
                 ),
             ),
@@ -83,7 +97,7 @@ def get_personal_cards(
         buttons[0] += (
             telebot.types.InlineKeyboardButton(
                 text='>>',
-                callback_data=callback_factory.switch_forth.new(
+                callback_data=card_list_callback_factory.switch_forth.new(
                     **data,
                 ),
             ),

@@ -21,7 +21,7 @@ extend-select = [
     "TCH", "ARG", "PTH", "ERA",
     "PL", "TRY", "PERF", "RUF"
 ]
-ignore = ["ANN101", "PERF101", "ISC001"]
+ignore = ["ANN101", "PERF101", "ISC001", "RUF001"]
 
 [lint.extend-per-file-ignores]
 "**/models/**.py" = ["F821"]
