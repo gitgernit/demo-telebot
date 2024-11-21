@@ -1,7 +1,8 @@
 import sqlmodel.ext.asyncio.session
 import telebot.types
 
-from bot.apps.cards.layouts import get_personal_cards
+import bot.apps.cards.common
+import bot.apps.cards.layouts
 from bot.core import bot_router
 from bot.core.config import ENGINE
 import bot.models.card
@@ -17,19 +18,23 @@ async def send_user_cards(message: telebot.types.Message) -> None:
             bot.models.user.User,
             message.from_user.id,
         )
+        cards = await bot.apps.cards.common.sort_cards(user.cards, 'none')
 
-        markup = get_personal_cards(
-            amount=len(user.cards),
-            card_id=user.cards[0].id if user.cards else -1,
-            page=1 if user.cards else 0,
-            sorting='none',
-            favorite=False,
-        )
+    page = 1 if cards else 0
+    card_id = cards[page - 1].id if page else -1
+
+    markup = bot.apps.cards.layouts.get_personal_cards(
+        amount=len(cards),
+        card_id=card_id,
+        page=page,
+        sorting='none',
+        favorite=False,
+    )
 
     await bot_router.reply_to(
         message,
-        f'Card id: <b>{user.cards[0].id}</b>'
-        if user.cards
+        f'Card id: <b>{card_id}</b>'
+        if card_id != -1
         else "You've got none :(",
         reply_markup=markup,
         parse_mode='HTML',

@@ -1,12 +1,19 @@
-import typing
-
 import telebot.callback_data
 
 from bot.apps.cards.enums import Headers
 
 
 class CallbackFactory:
-    def __init__(self, fields: dict[str, typing.Any]) -> None:
+    def __init__(
+        self,
+        fields: tuple[str] = (
+            'amount',
+            'card_id',
+            'sorting',
+            'page',
+            'favorite',
+        ),
+    ) -> None:
         self.fields = fields
 
         self.switch_back = telebot.callback_data.CallbackData(
@@ -37,3 +44,6 @@ class CallbackFactory:
             *fields,
             prefix=Headers.DELETE_FROM_FAVORITES,
         )
+
+
+callback_factory = CallbackFactory()
