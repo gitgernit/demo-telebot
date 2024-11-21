@@ -14,3 +14,5 @@ class Card(sqlmodel.SQLModel, table=True):
 
     user_id: int = sqlmodel.Field(foreign_key='user.id')
     user: 'User' = sqlmodel.Relationship(back_populates='cards')
+
+    favorite: bool
